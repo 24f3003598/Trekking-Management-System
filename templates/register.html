@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrekHorizon - Register</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand font-weight-bold" href="/">TrekHorizon</a>
+            <div>
+                <a class="btn btn-outline-light btn-sm me-2" href="/login">Sign In</a>
+                <a class="btn btn-primary btn-sm" href="/register">Register</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                
+                <div class="card p-4 shadow-sm border bg-white rounded-3">
+                    <div class="card-body">
+                        
+                        <h2 class="text-center mb-4 fw-bold text-dark">Create Account</h2>
+                        
+                        <form action="/register" method="POST">
+                            
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold text-secondary">Full Name</label>
+                                <input type="text" name="name" class="form-control py-2" placeholder="John Doe" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold text-secondary">Email Address</label>
+                                <input type="email" name="email" class="form-control py-2" placeholder="name@email.com" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold text-secondary">Password</label>
+                                <input type="password" name="password" class="form-control py-2" placeholder="••••••••" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold text-secondary">Contact Number</label>
+                                <input type="tel" name="contact" class="form-control py-2" placeholder="1234567890" required>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold text-secondary">Select Your Role</label>
+                                <select name="role" class="form-select py-2" required>
+                                    <option value="" disabled selected>Choose role...</option>
+                                    <option value="Trekker">Trekker (Explore & Book Trips)</option>
+                                    <option value="Staff">Trek Staff (Manage Routes & Rosters)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg fw-bold fs-6 rounded-3 shadow-sm">
+                                    Register Account
+                                </button>
+                            </div>
+                            
+                        </form>
+                        
+                        <div class="text-center mt-4 pt-2 border-top">
+                            <span class="text-muted small">Already have an account?</span>
+                            <a href="/login" class="text-decoration-none small fw-bold text-primary ms-1">Sign In instead</a>
+                        </div>
+                        
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

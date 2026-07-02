@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Control Center - TrekHorizon{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="fw-bold text-dark">Admin Control Center</h1>
+        <p class="text-secondary">Manage system staff directories, monitor trek routes, and track application diagnostics.</p>
+    </div>
+</div>
+
+<div class="row g-4 mb-5">
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 bg-white rounded-3 p-3">
+            <div class="card-body">
+                <h6 class="text-uppercase text-muted fw-bold small mb-2">Total System Users</h6>
+                <h2 class="fw-bold text-dark m-0">{{ total_users | length if total_users is iterable else (total_users if total_users else 0) }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 bg-white rounded-3 p-3">
+            <div class="card-body">
+                <h6 class="text-uppercase text-muted fw-bold small mb-2">Active Trek Paths</h6>
+                <h2 class="fw-bold text-dark m-0">{{ total_treks | length if total_treks is iterable else (total_treks if total_treks else 0) }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 bg-warning text-white rounded-3 p-3">
+            <div class="card-body">
+                <h6 class="text-uppercase fw-bold small mb-2 text-white-50">Pending Approval Check</h6>
+                <h2 class="fw-bold m-0 text-white">{{ staff_requests | length if staff_requests is iterable else (staff_requests if staff_requests else 0) }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm border rounded-3 p-4 bg-white d-flex flex-column">
+            <h4 class="fw-bold text-dark mb-2">Staff Management Portal</h4>
+            <p class="text-muted small">Review all employee accounts, handle unapproved registrations, view roles, and restrict or revoke system entries.</p>
+            <a href="/admin/staff-details" class="btn btn-primary fw-bold mt-auto align-self-start px-4">
+                View Staff Details &rarr;
+            </a>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm border rounded-3 p-4 bg-white d-flex flex-column">
+            <h4 class="fw-bold text-dark mb-2">Trek Customer Management</h4>
+            <p class="text-muted small">Monitor system trekkers, investigate access logs, and handle user blacklisting vectors safely.</p>
+            <a href="/admin/user-details" class="btn btn-primary fw-bold mt-auto align-self-start px-4">
+                View Trekker Directory &rarr;
+            </a>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm border rounded-3 p-4 bg-white d-flex flex-column">
+            <h4 class="fw-bold text-dark mb-2">Global Trek Operations</h4>
+            <p class="text-muted small">Keep track of vacation schedules, monitor slot capacity listings across active expeditions, and audit historical logs.</p>
+            <button class="btn btn-outline-secondary mt-auto align-self-start px-4" disabled>
+                Trek Logs (Locked)
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}

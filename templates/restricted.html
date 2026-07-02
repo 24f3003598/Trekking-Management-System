@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Access Restricted{% endblock %}
+
+{% block content %}
+<div class="container text-center mt-5">
+    <h2 class="text-danger">⚠️ Account Access Restricted</h2>
+    
+    <div class="alert alert-danger my-4">
+        <p class="fs-5"><strong>Error:</strong> {{ error_message }}</p>
+    </div>
+    
+    <p class="text-muted">
+        If you believe this is an error, please contact the System Administrator to restore your account profile access level.
+    </p>
+    
+    <div class="mt-4">
+        <a href="/login" class="btn btn-secondary">
+            Return to Sign In
+        </a>
+    </div>
+</div>
+{% endblock %}

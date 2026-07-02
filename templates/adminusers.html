@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Users - Admin Portal{% endblock %}
+
+{% block content %}
+<div class="row mb-4 align-items-center">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-2">
+                <li class="breadcrumb-item"><a href="/dashboard" class="text-decoration-none">Dashboard</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Trekker Directory</li>
+            </ol>
+        </nav>
+        <h2 class="fw-bold text-dark m-0">Trekker Customer Directory</h2>
+        <p class="text-secondary small">Review registered trek travelers, check account activity, and manage access restrictions.</p>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <form action="/admin/user-details" method="GET" class="d-flex gap-2">
+            <input type="text" name="search" class="form-control" placeholder="Search trekkers by name or email..." value="{{ search_query if search_query else '' }}">
+            <button type="submit" class="btn btn-primary fw-bold px-4">Search</button>
+            {% if search_query %}
+                <a href="/admin/user-details" class="btn btn-outline-secondary">Clear</a>
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm border rounded-3 p-4 bg-white">
+            <h5 class="fw-bold text-secondary mb-3">Registered Travelers</h5>
+            
+            {% if user_list %}
+            <div class="table-responsive">
+                <table class="table align-middle table-hover m-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>User ID</th>
+                            <th>Full Name</th>
+                            <th>Email Address</th>
+                            <th>Contact Phone</th>
+                            <th>Status</th>
+                            <th class="text-end">Administrative Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for traveler in user_list %}
+                        <tr>
+                            <td>#{{ traveler.user_id }}</td>
+                            <td class="fw-bold text-dark">{{ traveler.name }}</td>
+                            <td>{{ traveler.email }}</td>
+                            <td>{{ traveler.phone if traveler.phone else 'N/A' }}</td>
+                            <td>
+                                {% if traveler.status == 'Approved' %}
+                                    <span class="badge bg-success">Active</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Blacklisted</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end">
+                                {% if traveler.status == 'Approved' %}
+                                    <a href="/admin/user/toggle/{{ traveler.user_id }}" class="btn btn-sm btn-outline-danger fw-bold px-3">Blacklist</a>
+                                {% else %}
+                                    <a href="/admin/user/toggle/{{ traveler.user_id }}" class="btn btn-sm btn-success fw-bold px-3"> Activate</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-4 text-muted">
+                <p class="m-0">No trekkers matched your criteria or have registered yet.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
