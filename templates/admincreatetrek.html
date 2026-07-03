@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin - Create Trek Route{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 700px;">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white py-3">
+            <h4 class="mb-0">Create New Trek Route</h4>
+        </div>
+        <div class="card-body p-4">
+            <form action="/admin/trek/create" method="POST">
+                
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Trek Name</label>
+                    <input type="text" name="trek_name" class="form-control" placeholder="e.g., Himalayan Ridge Trail" required>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Location</label>
+                        <input type="text" name="location" class="form-control" placeholder="e.g., Himachal, India" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Cost Per Person (₹)</label>
+                        <input type="number" step="0.01" name="cost_per_person" class="form-control" placeholder="7000" required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Difficulty Level</label>
+                        <select name="difficulty" class="form-select" required>
+                            <option value="Easy">Easy</option>
+                            <option value="Moderate">Moderate</option>
+                            <option value="Hard">Hard</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Duration (Days)</label>
+                        <input type="number" name="duration_days" class="form-control" min="1" placeholder="4" required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Max Operational Slots</label>
+                        <input type="number" name="max_slots" class="form-control" min="1" placeholder="15" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Launch Status</label>
+                        <select name="status" class="form-select">
+                            <option value="Pending">Pending Approval</option>
+                            <option value="Open">Open / Active</option>
+                            <option value="Closed">Closed</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Start Date</label>
+                        <input type="date" name="start_date" class="form-control" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">End Date</label>
+                        <input type="date" name="end_date" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Meeting Point</label>
+                    <input type="text" name="meeting_point" class="form-control" placeholder="e.g., Base Camp Base Terminal, Gate 2" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Trek Description</label>
+                    <textarea name="description" class="form-control" rows="3" placeholder="Provide trail specifications, scenery overview, gear requirements..."></textarea>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Assign Staff Guide</label>
+                    <select name="assigned_staff_id" class="form-select">
+                        <option value="">-- Leave Unassigned --</option>
+                        {% for member in staff %}
+                            <option value="{{ member.user_id }}">{{ member.name }} (ID: #{{ member.user_id }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center pt-2">
+                    <a href="/admin/treks" class="text-decoration-none text-secondary">&larr; Discard Changes</a>
+                    <button type="submit" class="btn btn-primary px-4">Deploy Trek Blueprint</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -16,9 +16,11 @@
             </button>
             <div class="collapse navbar-collapse" id="appNavbar">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link" href="/dashboard">Dashboard Hub</a></li>
-                    {% if session.get('user_role') == 'Admin' %}
+                    <li class="nav-item"><a class="nav-link" href="/dashboard">Dashboard </a></li>
+                    {% if session['user_role'] == 'Admin' %}
                     <li class="nav-item"><a class="nav-link" href="/admin/staff-details">Manage Staff</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/user-details">Manage Users</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/treks">Manage Treks</a></li>
                     {% endif %}
                 </ul>
                 <div class="navbar-nav ms-auto align-items-center">

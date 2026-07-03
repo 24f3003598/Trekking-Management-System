@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin - Manage Treks{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Flash Messages Handler -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category if category != 'warning' else 'danger' }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Trek Management Directory</h2>
+        <a href="/admin/trek/create" class="btn btn-primary">+ Create New Trek</a>
+    </div>
+
+    <!-- NEW SECTION: Search Engine Form Panel -->
+    <div class="card shadow-sm border-0 mb-4 bg-white p-3">
+        <form action="/admin/treks" method="GET" class="row g-2 align-items-center">
+            <div class="col-md-9 col-sm-8">
+                <input type="text" name="search" class="form-control" 
+                       placeholder="Search by trek name or geographic location..." 
+                       value="{{ search_query }}">
+            </div>
+            <div class="col-md-3 col-sm-4 d-flex gap-2">
+                <button type="submit" class="btn btn-dark w-100">Search</button>
+                {% if search_query %}
+                    <a href="/admin/treks" class="btn btn-outline-secondary">Clear</a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+
+    <!-- Trek Table Data Container -->
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0 align-middle">
+                    <thead class="table-dark text-nowrap">
+                        <tr>
+                            <th>ID</th>
+                            <th>Trek Name</th>
+                            <th>Location</th>
+                            <th>Difficulty</th>
+                            <th>Duration</th>
+                            <th>Slots</th>
+                            <th>Start Date</th>
+                            <th>Status</th>
+                            <th>Assigned Staff</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if treks %}
+                            {% for trek in treks %}
+                            <tr>
+                                <td>#{{ trek.trek_id }}</td>
+                                <td><strong>{{ trek.trek_name }}</strong></td>
+                                <td>{{ trek.location }}</td>
+                                <td>
+                                    <span class="badge {% if trek.difficulty == 'Easy' %}bg-success{% elif trek.difficulty == 'Moderate' %}bg-warning text-dark{% else %}bg-danger{% endif %}">
+                                        {{ trek.difficulty }}
+                                    </span>
+                                </td>
+                                <td>{{ trek.duration_days }} Days</td>
+                                <td>{{ trek.available_slots }} / {{ trek.max_slots }}</td>
+                                <td>{{ trek.start_date.strftime('%Y-%m-%d') }}</td>
+                                <td>
+                                    <span class="badge bg-secondary">{{ trek.status }}</span>
+                                </td>
+                                <td>
+                                    {% if trek.assigned_staff %}
+                                        {{ trek.assigned_staff.name }}
+                                    {% else %}
+                                        <em class="text-muted">Unassigned</em>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <a href="/admin/trek/edit/{{ trek.trek_id }}" class="btn btn-sm btn-outline-dark">Edit Details</a>
+                                        <form action="/admin/trek/delete/{{ trek.trek_id }}" method="POST" onsubmit="return confirm('Are you absolutely sure you want to permanently delete this trek? This action cannot be undone.');">
+                                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="10" class="text-center py-4 text-muted">No treks match your search parameters. Click "Clear" to view all records.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

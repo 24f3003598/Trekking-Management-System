@@ -37,7 +37,10 @@ class Trek(db.Model):
     end_date = db.Column(db.Date, nullable=False)
     status = db.Column(db.Enum('Pending', 'Approved', 'Open', 'Closed', 'Completed', name='trek_status'), nullable=False)
     assigned_staff_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=True)
-
+    cost_per_person = db.Column(db.Float, nullable=False, default=0.0)
+    meeting_point = db.Column(db.String(255), nullable=True)
+    description = db.Column(db.Text, nullable=True)
+    
     # Relationship to access bookings for this trek
     bookings = db.relationship('Booking', backref='trek', lazy=True)
 
