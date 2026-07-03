@@ -28,6 +28,7 @@ def login():
             return redirect('/dashboard')
 
         else:
+            session.clear()
             msg = 'Invalid email or password.Try again!'
             return render_template('restricted.html' , error_message= msg)
         

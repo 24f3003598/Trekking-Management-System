@@ -186,3 +186,7 @@ def admin_delete_trek(trek_id):
     db.session.commit()
 
     return redirect('/admin/treks')
+
+@app.route('/logout')
+def logout():
+    return render_template('home.html')

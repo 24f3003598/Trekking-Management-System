@@ -4,20 +4,26 @@
 
 {% block content %}
 <div class="container text-center mt-5">
-    <h2 class="text-danger">⚠️ Account Access Restricted</h2>
-    
-    <div class="alert alert-danger my-4">
-        <p class="fs-5"><strong>Error:</strong> {{ error_message }}</p>
-    </div>
-    
-    <p class="text-muted">
-        If you believe this is an error, please contact the System Administrator to restore your account profile access level.
-    </p>
-    
-    <div class="mt-4">
-        <a href="/login" class="btn btn-secondary">
-            Return to Sign In
-        </a>
+    <div class="card mx-auto p-4" style="max-width: 500px;">
+        <div class="card-body">
+            
+            <h2 class="text-danger mb-3"> Account Access Restricted</h2>
+            
+            <div class="alert alert-danger my-3">
+                <p class="mb-0"><strong>Error:</strong> {{ error_message }}</p>
+            </div>
+            
+            <p class="text-muted">
+                Please contact your System Administrator to change your access level.
+            </p>
+            
+            <div class="mt-4">
+                <a href="/login" class="btn btn-secondary">
+                    Return to Sign In
+                </a>
+            </div>
+
+        </div>
     </div>
 </div>
 {% endblock %}
