@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block title %}Staff Space - TrekHorizon{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+
+    <div class="p-4 bg-light border rounded mb-4">
+        <div class="row align-items-center">
+            <div class="col-sm-8">
+                <h3 class="mb-1 text-dark">Welcome Back, {{ session.get('user_name', 'Staff Member') }}!</h3>
+            </div>
+            <div class="col-sm-4 text-sm-end mt-2 mt-sm-0">
+                <span class="badge bg-primary px-3 py-2 fs-6">Active Assignments: {{ treks|length }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border shadow-sm">
+        <div class="card-header bg-dark text-white py-3">
+            <h5 class="card-title mb-0 fs-6 font-monospace">🗺️ My Operational Trek Logs</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0 align-middle">
+                    <thead class="table-light border-bottom text-secondary">
+                        <tr>
+                            <th scope="col" class="ps-3">Trek Title & Registered Hikers</th>
+                            <th scope="col">Geographic Location</th>
+                            <th scope="col">Duration</th>
+                            <th scope="col" style="width: 170px;">Available Slots</th>
+                            <th scope="col" style="width: 170px;">Trek Status</th>
+                            <th scope="col" class="pe-3 text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="border-top-0">
+                        {% for trek in treks %}
+                        <tr>
+                            <td class="ps-3">
+                                <div><strong>{{ trek.trek_name }}</strong></div>
+                                <div class="mt-1">
+                                    <button class="btn btn-sm btn-outline-primary py-0 px-2 fs-7" type="button" 
+                                            data-bs-toggle="collapse" data-bs-target="#roster{{ trek.trek_id }}">
+                                        👥 View Roster ({{ trek.bookings|length }} Going)
+                                    </button>
+                                </div>
+                            </td>
+                            <td><span class="text-muted">{{ trek.location }}</span></td>
+                            <td>{{ trek.duration_days }} Days <small class="text-muted">({{ trek.start_date }})</small></td>
+                            
+                            <form action="/staff/update_trek/{{ trek.trek_id }}" method="POST">
+                                <td>
+                                    <div class="input-group input-group-sm">
+                                        <input type="number" name="available_slots" class="form-control text-center" 
+                                               value="{{ trek.available_slots }}" min="0" max="{{ trek.max_slots }}">
+                                        <span class="input-group-text bg-white text-muted">/ {{ trek.max_slots }}</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <select name="status" class="form-select form-select-sm">
+                                        <option value="Open" {% if trek.status == 'Open' %}selected{% endif %}>Open</option>
+                                        <option value="Closed" {% if trek.status == 'Closed' %}selected{% endif %}>Closed</option>
+                                        <option value="Pending" {% if trek.status == 'Pending' %}selected{% endif %}>Pending</option>
+                                        <option value="Completed" {% if trek.status == 'Completed' %}selected{% endif %}>Completed</option>
+                                    </select>
+                                </td>
+                                <td class="pe-3 text-center">
+                                    <button type="submit" class="btn btn-sm btn-success w-100 px-3">Update</button>
+                                </td>
+                            </form>
+                        </tr>
+
+                        <tr class="collapse-row">
+                            <td colspan="6" class="p-0 border-top-0">
+                                <div class="collapse bg-white border-bottom px-4 py-3" id="roster{{ trek.trek_id }}">
+                                    <h6 class="text-secondary fw-bold mb-2">📋 Confirmed Trekker Roster</h6>
+                                    
+                                    {% if trek.bookings %}
+                                        <div class="table-responsive">
+                                            <table class="table table-sm table-bordered mb-0 bg-light fs-7">
+                                                <thead class="table-secondary text-dark">
+                                                    <tr>
+                                                        <th>Hiker Name</th>
+                                                        <th>Contact Email</th>
+                                                        <th>Booking Date</th>
+                                                        <th>Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for booking in trek.bookings %}
+                                                    <tr>
+                                                        <td><strong>{{ booking.trekker.name }}</strong></td>
+                                                        <td>{{ booking.trekker.email }}</td>
+                                                        <td><small class="text-muted">{{ booking.booking_date.strftime('%Y-%m-%d') if booking.booking_date else 'N/A' }}</small></td>
+                                                        <td>
+                                                            <span class="badge {% if booking.status == 'Booked' %}bg-success{% else %}bg-warning text-dark{% endif %}">
+                                                                {{ booking.status }}
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    {% else %}
+                                        <div class="text-muted py-2 ps-2">
+                                            <small>No trekkers have booked slots on this blueprint itinerary yet.</small>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-5">
+                                <p class="mb-1 fs-5">⚠️ No treks are appearing for your staff profile.</p>
+                                <small class="d-block text-secondary">Please check your backend VS Code terminal console logs for debugging details.</small>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.fs-7 { font-size: 0.85rem !important; }
+</style>
+{% endblock %}

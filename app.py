@@ -30,7 +30,8 @@ def dashboard():
                                total_users=all_users)
 
     elif role == 'Staff':
-        return render_template('staffhomepage.html')
+        assigned_treks = Trek.query.filter_by(assigned_staff_id=user_id).all()
+        return render_template('staffhomepage.html' , treks=assigned_treks)
 
     elif role == 'Trekker':
         return f"Welcome, Explorer {session['user_name']}. Your booking feed is coming next!"
