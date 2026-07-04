@@ -1,7 +1,6 @@
 from flask import Flask,render_template,request,redirect,session
 from models import db, User ,Trek ,Booking
 
-
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///trekking_system.db'
 app.secret_key = "super_secret_viva_safeguard_key"
@@ -34,7 +33,8 @@ def dashboard():
         return render_template('staffhomepage.html' , treks=assigned_treks)
 
     elif role == 'Trekker':
-        return f"Welcome, Explorer {session['user_name']}. Your booking feed is coming next!"
+        all_available_treks = Trek.query.filter_by(status='Open').all()
+        return render_template('explore.html',treks=all_available_treks)
 
     return redirect('/login')
 
@@ -58,6 +58,7 @@ with app.app_context():
 from routes.auth import *
 from routes.admin import *
 from routes.staff import *
+from routes.user import *
 
 if __name__ == '__main__':
     app.run(debug=True)

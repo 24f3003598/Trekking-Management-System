@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}Explore Expeditions - TrekHorizon{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h2 class="fw-bold text-dark">Explore Upcoming Treks</h2>
+        <p class="text-muted">Discover and book your next grand mountain adventure.</p>
+    </div>
+</div>
+
+<div class="row g-4">
+    {% if treks %}
+        {% for trek in treks %}
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="bg-primary text-white p-4 text-center rounded-top">
+                        <h4 class="mb-0 fw-bold">⛰️ {{ trek.trek_name }}</h4>
+                    </div>
+                    
+                    <div class="card-body d-flex flex-column">
+                        <p class="card-text text-secondary flex-grow-1">
+                            {{ trek.description if trek.description else "No description provided for this expedition yet." }}
+                        </p>
+                        
+                        <hr class="text-muted">
+                        
+                        <div class="row g-2 small mb-3">
+                            <div class="col-6">
+                                <span class="text-muted d-block">Location</span>
+                                <strong class="text-dark">{{ trek.location }}</strong>
+                            </div>
+                            <div class="col-6 text-end">
+                                <span class="text-muted d-block">Cost per person</span>
+                                <strong class="text-success">${{ trek.cost_per_person if trek.cost_per_person else 'N/A' }}</strong>
+                            </div>
+                            <div class="col-6 mt-2">
+                                <span class="text-muted d-block">Status</span>
+                                <span class="badge {% if trek.status == 'Open' %}bg-success{% else %}bg-danger{% endif %}">
+                                    {{ trek.status }}
+                                </span>
+                            </div>
+                            <div class="col-6 text-end mt-2">
+                                <span class="text-muted d-block">Available Slots</span>
+                                <strong class="text-dark">{{ trek.available_slots }}</strong>
+                            </div>
+                        </div>
+
+                        {% if trek.status == 'Open' and trek.available_slots > 0 %}
+                            <form action="/book/{{ trek.trek_id }}" method="POST" class="mt-auto">
+                                <button type="submit" class="btn btn-primary w-100 fw-bold btn-sm">Book This Journey</button>
+                            </form>
+                        {% else %}
+                            <button class="btn btn-secondary w-100 btn-sm mt-auto" disabled>Slots Full / Closed</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-12 text-center py-5">
+            <div class="alert alert-light border py-5">
+                <p class="lead mb-0 text-muted">🗺️ No active trekking expeditions are registered right now. Check back later!</p>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
