@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5 text-center" style="max-width: 600px;">
+    <div class="card shadow border-danger">
+        <div class="card-body py-5">
+            <div class="text-danger mb-4">
+                <i class="bi bi-exclamation-triangle-fill" style="font-size: 3rem;"></i>
+            </div>
+            
+            <h2 class="text-danger mb-3">Booking Unsuccessful</h2>
+            
+            <p class="lead text-muted mb-4">
+                {{ error_message }}
+            </p>
+
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                <a href="/explore-treks" class="btn btn-outline-secondary px-4 me-sm-2">Browse Other Treks</a>
+                <a href="/dashboard" class="btn btn-danger px-4">Go to Dashboard</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

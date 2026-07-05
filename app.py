@@ -34,7 +34,8 @@ def dashboard():
 
     elif role == 'Trekker':
         all_available_treks = Trek.query.filter_by(status='Open').all()
-        return render_template('explore.html',treks=all_available_treks)
+        user_bookings = Booking.query.filter_by(user_id=user_id).all()
+        return render_template('explore.html',treks=all_available_treks,bookings=user_bookings)
 
     return redirect('/login')
 
