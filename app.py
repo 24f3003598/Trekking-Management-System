@@ -1,5 +1,6 @@
 from flask import Flask,render_template,request,redirect,session
 from models import db, User ,Trek ,Booking
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///trekking_system.db'
@@ -44,10 +45,11 @@ with app.app_context():
     existing_admin = User.query.filter_by(email='admin@gmail.com').first()
 
     if not existing_admin:
+        hashed_admin_password = generate_password_hash('admin123')
         admin = User(
                 name='Admin',
                 email='admin@gmail.com',
-                password='admin123',     
+                password=hashed_admin_password,     
                 phone='1234789000',
                 role='Admin',
                 status='Approved'

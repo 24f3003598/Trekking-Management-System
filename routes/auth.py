@@ -1,4 +1,5 @@
 from flask import Flask,render_template,request,redirect,session
+from werkzeug.security import generate_password_hash, check_password_hash
 from models import db, User
 from app import app
 
@@ -8,8 +9,8 @@ def login():
         input_email = request.form.get('email')
         input_password = request.form.get('password')
 
-        existing_user = User.query.filter_by(email=input_email,password=input_password).first()
-        if existing_user:
+        existing_user = User.query.filter_by(email=input_email).first()
+        if existing_user and check_password_hash(existing_user.password, input_password):
 
             if existing_user.role=='Staff' and existing_user.status=='Pending':
                 session.clear()
@@ -51,6 +52,8 @@ def register():
             msg = "Email already registered! Try another one."
             return render_template('restricted.html' , error_message= msg)
 
+        hashed_password = generate_password_hash(input_password)
+        
         if input_role == 'Staff':
             user_status = 'Pending'
         else :
@@ -59,7 +62,7 @@ def register():
         new_user = User(
             name=input_name,
             email=input_email,
-            password=input_password,     
+            password=hashed_password,     
             phone=input_contact,
             role=input_role,
             status=user_status
