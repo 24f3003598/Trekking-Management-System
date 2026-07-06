@@ -50,7 +50,7 @@ def staff_update_trek(trek_id):
         db.session.rollback()
         print(f"[ERROR] Failed to save staff updates: {e}")
 
-    return redirect('/staff/dashboard')
+    return redirect('/staff/dashboard?updated=true')
 
 @app.route('/staff/trek/<int:trek_id>/roster')
 def view_roster(trek_id):

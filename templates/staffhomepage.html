@@ -10,6 +10,14 @@
         {% set stats.active = stats.active + 1 %}
     {% endif %}
 {% endfor %}
+
+{% if request.args.get('updated') == 'true' %}
+    <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+         <strong>Success:</strong> Trek data updated in database!
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+{% endif %}
+
     <div class="p-4 bg-light border rounded mb-3">
         <h3 class="mb-0 text-dark">Welcome Back, {{ session.get('user_name', 'Staff Member') }}!</h3>
     </div>
