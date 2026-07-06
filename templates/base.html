@@ -10,22 +10,34 @@
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
         <div class="container">
-            <a class="navbar-brand fw-bold text-primary" href="/dashboard">TrekHorizon</a>
+            {% if session.get('user_role') == 'Staff' %}
+                <a class="navbar-brand fw-bold text-primary" href="/staff/dashboard">TrekHorizon</a>
+            {% else %}
+                <a class="navbar-brand fw-bold text-primary" href="/dashboard">TrekHorizon</a>
+            {% endif %}
+            
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#appNavbar">
                 <span class="navbar-toggler-icon"></span>
             </button>
+            
             <div class="collapse navbar-collapse" id="appNavbar">
                 <ul class="navbar-nav me-auto">
-                    {% if session['user_role'] == 'Admin' %}
-                    <li class="nav-item"><a class="nav-link" href="/admin/staff-details">Manage Staff</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/admin/user-details">Manage Users</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/admin/treks">Manage Treks</a></li>
+                    {% if session.get('user_role') == 'Admin' %}
+                        <li class="nav-item"><a class="nav-link" href="/admin/staff-details">Manage Staff</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/admin/user-details">Manage Users</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/admin/treks">Manage Treks</a></li>
                     {% endif %}
                 </ul>
-                <div class="navbar-nav ms-auto align-items-center">
-                    <span class="text-light me-3 small">
-                        Hi, <strong>{{ session['user_name'] }}</strong>     
+                
+                <div class="navbar-nav ms-auto align-items-center gap-2">
+                    <span class="text-light me-1 small">
+                        Hi, <strong>{{ session.get('user_name', 'User') }}</strong>     
                     </span>
+                    
+                    {% if session.get('user_role') == 'Staff' %}
+                        <a class="btn btn-sm btn-outline-primary fw-bold px-3" href="/staff/profile">👤 My Profile</a>
+                    {% endif %}
+                    
                     <a class="btn btn-sm btn-outline-danger fw-bold px-3" href="/logout">Logout</a>
                 </div>
             </div>

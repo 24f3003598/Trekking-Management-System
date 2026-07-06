@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Profile - TrekHorizon{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    
+    {% if request.args.get('success') == 'true' %}
+        <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert" id="profileAlert">
+            <strong>System Update:</strong> Your profile records have been securely committed to the database!
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <script>
+            if (window.history.replaceState) {
+                window.history.replaceState(null, null, window.location.pathname);
+            }
+        </script>
+    {% endif %}
+
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-6">
+            <div class="card border shadow-sm">
+                
+                <div class="card-header bg-dark text-white py-3 text-center">
+                    <h5 class="mb-0 font-monospace fw-bold">👤 Update Profile Credentials</h5>
+                </div>
+                
+                <div class="card-body p-4">
+                    <form action="/staff/profile" method="POST">
+                        
+                        <div class="mb-3">
+                            <label class="form-label text-secondary small fw-bold mb-1">Account Email Address:</label>
+                            <input type="email" class="form-control bg-light text-muted fw-bold" value="{{ staff.email }}" disabled>
+                            <div class="form-text text-danger" style="font-size: 11px;">⚠️ Contact your principal system administrator to modify corporate login emails.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="name" class="form-label text-secondary small fw-bold mb-1">Full Legal Name:</label>
+                            <input type="text" name="name" id="name" class="form-control fw-bold" value="{{ staff.name }}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="phone" class="form-label text-secondary small fw-bold mb-1">Contact Phone Number:</label>
+                            <input type="text" name="phone" id="phone" class="form-control fw-bold" value="{{ staff.phone if staff.phone else '' }}" placeholder="Enter active cell line...">
+                        </div>
+
+                        <div class="row g-2 mt-4 pt-2 border-top">
+                            <div class="col-6">
+                                <a href="/staff/dashboard" class="btn btn-outline-secondary w-100 font-monospace">Cancel</a>
+                            </div>
+                            <div class="col-6">
+                                <button type="submit" class="btn btn-success w-100 fw-bold">Save Changes</button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

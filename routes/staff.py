@@ -22,33 +22,23 @@ def staff_dashboard():
 
     return render_template('staffhomepage.html', treks=assigned_treks)
 
-
 @app.route('/staff/update_trek/<int:trek_id>', methods=['POST'])
-def staff_update_trek(trek_id):
+def update_trek(trek_id):
     if 'user_id' not in session or session.get('user_role') != 'Staff':
-        return "Access Forbidden", 403
+        return redirect('/login')
 
     trek = Trek.query.get_or_404(trek_id)
+
+    slots_input = int(request.form.get('available_slots', 0))
+    status_input = request.form.get('status')
     
-    if trek.assigned_staff_id != session['user_id']:
-        return "Unauthorized action on this trek layout", 403
+    if slots_input == 0:
+        status_input = 'Closed'
 
-    try:
-        updated_slots = int(request.form.get('available_slots'))
-        updated_status = request.form.get('status')
+    trek.available_slots = slots_input
+    trek.status = status_input
 
-        
-        if 0 <= updated_slots <= trek.max_slots:
-            trek.available_slots = updated_slots
-        
-        if updated_status in ['Open', 'Closed', 'Pending', 'Completed']:
-            trek.status = updated_status
-
-        db.session.commit()
-        print(f"[SUCCESS] Trek ID #{trek_id} updated by Staff ID #{session['user_id']}.")
-    except Exception as e:
-        db.session.rollback()
-        print(f"[ERROR] Failed to save staff updates: {e}")
+    db.session.commit()
 
     return redirect('/staff/dashboard?updated=true')
 
@@ -56,3 +46,22 @@ def staff_update_trek(trek_id):
 def view_roster(trek_id):
     trek = Trek.query.get_or_404(trek_id)
     return render_template('roster.html', trek=trek)
+
+@app.route('/staff/profile', methods=['GET', 'POST'])
+def staff_profile():
+    if 'user_id' not in session or session.get('user_role') != 'Staff':
+        return "Access Forbidden", 403
+
+    staff_user = User.query.get_or_404(session['user_id'])
+    
+    if request.method == 'POST':
+        staff_user.name = request.form.get('name').strip()
+        staff_user.phone = request.form.get('phone').strip()
+
+        db.session.commit()
+        
+        session['user_name'] = staff_user.name
+        
+        return redirect('/staff/dashboard?updated=true')
+        
+    return render_template('staff_profile.html', staff=staff_user)

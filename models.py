@@ -35,7 +35,7 @@ class Trek(db.Model):
     max_slots = db.Column(db.Integer, nullable=False)
     start_date = db.Column(db.Date, nullable=False)
     end_date = db.Column(db.Date, nullable=False)
-    status = db.Column(db.Enum('Pending', 'Approved', 'Open', 'Closed', 'Completed', name='trek_status'), nullable=False)
+    status = db.Column(db.Enum('Pending', 'Started', 'Open', 'Closed', 'Completed', name='trek_status'), nullable=False)
     assigned_staff_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=True)
     cost_per_person = db.Column(db.Float, nullable=False, default=0.0)
     meeting_point = db.Column(db.String(255), nullable=True)

@@ -6,29 +6,37 @@
 {% set stats = namespace(participants=0, active=0) %}
 {% for trek in treks %}
     {% set stats.participants = stats.participants + trek.bookings|length %}
-    {% if trek.status == 'Open' or trek.status == 'Pending' %}
+    {% if trek.status in ['Open', 'Pending', 'Started', 'Ongoing'] %}
         {% set stats.active = stats.active + 1 %}
     {% endif %}
 {% endfor %}
 
-{% if request.args.get('updated') == 'true' %}
-    <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
-         <strong>Success:</strong> Trek data updated in database!
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-{% endif %}
+<div class="container mt-3">
 
-    <div class="p-4 bg-light border rounded mb-3">
-        <h3 class="mb-0 text-dark">Welcome Back, {{ session.get('user_name', 'Staff Member') }}!</h3>
+    {% if request.args.get('updated') == 'true' %}
+        <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert" id="successAlert">
+             <strong>Success:</strong> Trek metrics updated in database dynamically!
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <script>
+            if (window.history.replaceState) {
+                window.history.replaceState(null, null, window.location.pathname);
+            }
+        </script>
+    {% endif %}
+
+    <div class="p-3 bg-light border rounded mb-3">
+        <h4 class="mb-0 text-dark fw-bold">Welcome Back, {{ session.get('user_name', 'Staff Member') }}!</h4>
     </div>
 
     <div class="row g-3 mb-4">
         <div class="col-md-4">
             <div class="card border shadow-sm h-100">
-                <div class="card-body d-flex align-items-center">
+                <div class="card-body d-flex align-items-center py-3">
                     <div>
-                        <h6 class="card-subtitle text-muted mb-1 text-uppercase small font-monospace fw-bold">Assigned Treks</h6>
-                        <h3 class="card-title mb-0 fw-bold">{{ treks|length }}</h3>
+                        <h6 class="card-subtitle text-muted mb-1 text-uppercase small font-monospace fw-bold" style="font-size: 0.75rem;">Assigned Treks</h6>
+                        <h4 class="card-title mb-0 fw-bold">{{ treks|length }}</h4>
                     </div>
                 </div>
             </div>
@@ -36,10 +44,10 @@
 
         <div class="col-md-4">
             <div class="card border shadow-sm h-100">
-                <div class="card-body d-flex align-items-center">
+                <div class="card-body d-flex align-items-center py-3">
                     <div>
-                        <h6 class="card-subtitle text-muted mb-1 text-uppercase small font-monospace fw-bold">Total Participants</h6>
-                        <h3 class="card-title mb-0 fw-bold">{{ stats.participants }}</h3>
+                        <h6 class="card-subtitle text-muted mb-1 text-uppercase small font-monospace fw-bold" style="font-size: 0.75rem;">Total Participants</h6>
+                        <h4 class="card-title mb-0 fw-bold">{{ stats.participants }}</h4>
                     </div>
                 </div>
             </div>
@@ -47,10 +55,10 @@
 
         <div class="col-md-4">
             <div class="card border shadow-sm h-100">
-                <div class="card-body d-flex align-items-center">
+                <div class="card-body d-flex align-items-center py-3">
                     <div>
-                        <h6 class="card-subtitle text-muted mb-1 text-uppercase small font-monospace fw-bold">Active Treks</h6>
-                        <h3 class="card-title mb-0 fw-bold">{{ stats.active }}</h3>
+                        <h6 class="card-subtitle text-muted mb-1 text-uppercase small font-monospace fw-bold" style="font-size: 0.75rem;">Active Treks</h6>
+                        <h4 class="card-title mb-0 fw-bold">{{ stats.active }}</h4>
                     </div>
                 </div>
             </div>
@@ -58,7 +66,7 @@
     </div>
 
     <div class="d-flex align-items-center mb-3">
-        <h5 class="text-secondary mb-0 font-monospace fw-bold">🗺️ My Assigned Trek Logs</h5>
+        <h5 class="text-secondary mb-0 font-monospace fw-bold">My Assigned Treks</h5>
         <hr class="flex-grow-1 ms-3 my-0 border-secondary opacity-25">
     </div>
 
@@ -67,25 +75,25 @@
         <div class="col-12">
             <div class="card border shadow-sm w-100 overflow-hidden">
                 <div class="row g-0 align-items-stretch">
-
+                    
                     <div class="col-md-5 bg-light p-4 d-flex flex-column justify-content-between border-end">
                         <div>
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <h4 class="text-dark fw-bold mb-0">{{ trek.trek_name }}</h4>
-                                <span class="badge {% if trek.status == 'Open' %}bg-success{% elif trek.status == 'Closed' %}bg-secondary{% elif trek.status == 'Pending' %}bg-warning text-dark{% else %}bg-info{% endif %} fs-8">
+                                <span class="badge {% if trek.status == 'Open' %}bg-success{% elif trek.status == 'Started' %}bg-primary{% elif trek.status == 'Ongoing' %}bg-info text-dark{% elif trek.status == 'Closed' %}bg-danger{% elif trek.status == 'Pending' %}bg-warning text-dark{% else %}bg-secondary{% endif %} fs-8">
                                     {{ trek.status }}
                                 </span>
                             </div>
-                            <p class="text-muted mb-3"><i class="bi bi-geo-alt-fill me-1"></i>📍 {{ trek.location }}</p>
+                            <p class="text-muted mb-3"> {{ trek.location }}</p>
                             <h6 class="mb-0 text-dark">
-                                <strong>📅 Duration:</strong> {{ trek.duration_days }} Days 
+                                <strong> Duration:</strong> {{ trek.duration_days }} Days 
                                 <span class="text-muted small">({{ trek.start_date }})</span>
                             </h6>
                         </div>
 
                         <div class="mt-4">
                             <a href="/staff/trek/{{ trek.trek_id }}/roster" class="btn btn-sm btn-outline-primary w-100 py-2 font-monospace fw-bold">
-                                👥 View Full Roster ({{ trek.bookings|length }} Going) →
+                                 View Full Roster ({{ trek.bookings|length }} Going) →
                             </a>
                         </div>
                     </div>
@@ -93,6 +101,7 @@
                     <div class="col-md-7 p-4 bg-white d-flex flex-column justify-content-center">
                         <form action="/staff/update_trek/{{ trek.trek_id }}" method="POST">
                             <div class="row g-3 align-items-end">
+                                
                                 <div class="col-sm-6">
                                     <label class="form-label text-secondary small fw-bold mb-1">Available Slots</label>
                                     <div class="input-group">
@@ -105,10 +114,17 @@
                                 <div class="col-sm-6">
                                     <label class="form-label text-secondary small fw-bold mb-1">Modify Operation Status</label>
                                     <select name="status" class="form-select fw-bold">
-                                        <option value="Open" {% if trek.status == 'Open' %}selected{% endif %}>Open</option>
-                                        <option value="Closed" {% if trek.status == 'Closed' %}selected{% endif %}>Closed</option>
-                                        <option value="Pending" {% if trek.status == 'Pending' %}selected{% endif %}>Pending</option>
-                                        <option value="Completed" {% if trek.status == 'Completed' %}selected{% endif %}>Completed</option>
+                                        <optgroup label="Booking Availability">
+                                            <option value="Open" {% if trek.status == 'Open' %}selected{% endif %}>Open (Accepting Registrations)</option>
+                                            <option value="Closed" {% if trek.status == 'Closed' %}selected{% endif %}>Closed (Full / Blocked)</option>
+                                            <option value="Pending" {% if trek.status == 'Pending' %}selected{% endif %}>Pending Approval</option>
+                                        </optgroup>
+                                        
+                                        <optgroup label="Live Trip Execution">
+                                            <option value="Started" {% if trek.status == 'Started' %}selected{% endif %}>🚀 Started (Group Departed)</option>
+                                            <option value="Ongoing" {% if trek.status == 'Ongoing' %}selected{% endif %}>🏕️ Ongoing (In Progress)</option>
+                                            <option value="Completed" {% if trek.status == 'Completed' %}selected{% endif %}>✅ Completed (Returned Safely)</option>
+                                        </optgroup>
                                     </select>
                                 </div>
 
@@ -120,44 +136,11 @@
                     </div>
 
                 </div>
-
-                <div class="collapse" id="roster{{ trek.trek_id }}">
-                    <div class="px-4 pb-4 pt-0 bg-white border-top">
-                        <h6 class="text-secondary fw-bold my-3 small font-monospace">📋 Confirmed Hiker Roster Metrics</h6>
-                        {% if trek.bookings %}
-                            <div class="table-responsive">
-                                <table class="table table-sm table-bordered mb-0 bg-light fs-8">
-                                    <thead class="table-secondary text-dark">
-                                        <tr>
-                                            <th>Hiker Name</th>
-                                            <th>Contact Email</th>
-                                            <th>Booking Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for booking in trek.bookings %}
-                                        <tr>
-                                            <td><strong>{{ booking.trekker.name }}</strong></td>
-                                            <td>{{ booking.trekker.email }}</td>
-                                            <td><span class="badge bg-success small">{{ booking.status }}</span></td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        {% else %}
-                            <div class="text-muted py-2 ps-2 border rounded bg-light text-center small">
-                                No customer bookings logged on this itinerary layout yet.
-                            </div>
-                        {% endif %}
-                    </div>
-                </div>
-
             </div>
         </div>
         {% else %}
         <div class="col-12 text-center text-muted py-5">
-            <p class="mb-1 fs-5">⚠️ No treks are appearing for your staff profile.</p>
+            <p class="mb-1 fs-5"> No treks are appearing for your staff profile.</p>
         </div>
         {% endfor %}
     </div>
