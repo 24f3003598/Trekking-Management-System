@@ -16,7 +16,6 @@
             </button>
             <div class="collapse navbar-collapse" id="appNavbar">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link" href="/dashboard">Dashboard </a></li>
                     {% if session['user_role'] == 'Admin' %}
                     <li class="nav-item"><a class="nav-link" href="/admin/staff-details">Manage Staff</a></li>
                     <li class="nav-item"><a class="nav-link" href="/admin/user-details">Manage Users</a></li>

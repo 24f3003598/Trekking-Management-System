@@ -77,10 +77,13 @@
                                     {% endif %}
                                 </td>
                                 <td class="text-center">
-                                    <div class="d-flex justify-content-center gap-2">
-                                        <a href="/admin/trek/edit/{{ trek.trek_id }}" class="btn btn-sm btn-outline-dark">Edit Details</a>
-                                        <form action="/admin/trek/delete/{{ trek.trek_id }}" method="POST" onsubmit="return confirm('Are you absolutely sure you want to permanently delete this trek? This action cannot be undone.');">
-                                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                    <div class="d-inline-flex align-items-center gap-1">
+                                        <a href="/admin/trek/edit/{{ trek.trek_id }}" class="text-dark text-decoration-none">Edit</a>
+                                        
+                                        <span class="text-muted">/</span>
+                                        
+                                        <form action="/admin/trek/delete/{{ trek.trek_id }}" method="POST" onsubmit="return confirm('Are you absolutely sure you want to permanently delete this trek? This action cannot be undone.');" class="d-inline">
+                                            <button type="submit" class="btn btn-link p-0 text-danger text-decoration-none border-0 align-baseline" style="font-size: inherit;">Delete</button>
                                         </form>
                                     </div>
                                 </td>

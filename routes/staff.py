@@ -51,3 +51,8 @@ def staff_update_trek(trek_id):
         print(f"[ERROR] Failed to save staff updates: {e}")
 
     return redirect('/staff/dashboard')
+
+@app.route('/staff/trek/<int:trek_id>/roster')
+def view_roster(trek_id):
+    trek = Trek.query.get_or_404(trek_id)
+    return render_template('roster.html', trek=trek)
