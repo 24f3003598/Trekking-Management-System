@@ -96,3 +96,21 @@ def cancel_booking(booking_id):
     except Exception as e:
         db.session.rollback()
         return "A backend database error occurred while cancelling your journey.", 500
+
+@app.route('/user/profile', methods=['GET', 'POST'])
+def user_profile():
+    user_id = session.get('user_id')
+    if not user_id:
+        return redirect('/login')
+
+    current_user = User.query.get_or_404(user_id)
+    
+    if request.method == 'POST':
+        current_user.username = request.form.get('username')
+        current_user.phone = request.form.get('phone')
+
+        db.session.commit()
+
+        return redirect('/dashboard?success=true')
+
+    return render_template('user_profile.html', user=current_user)

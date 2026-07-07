@@ -38,6 +38,9 @@
                         <a class="btn btn-sm btn-outline-primary fw-bold px-3" href="/staff/profile">👤 My Profile</a>
                     {% endif %}
                     
+                    {% if session.get('user_role') == 'Trekker' %}
+                        <a class="btn btn-sm btn-outline-primary fw-bold px-3" href="/user/profile">👤 My Profile</a>
+                    {% endif %}
                     <a class="btn btn-sm btn-outline-danger fw-bold px-3" href="/logout">Logout</a>
                 </div>
             </div>
