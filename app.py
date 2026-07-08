@@ -34,9 +34,30 @@ def dashboard():
         return render_template('staffhomepage.html' , treks=assigned_treks)
 
     elif role == 'Trekker':
-        all_available_treks = Trek.query.filter_by(status='Open').all()
+        location_query = request.args.get('location', '').strip()
+        difficulty_query = request.args.get('difficulty', '').strip()
+
+        query = Trek.query.filter_by(status='Open')
+
+        if location_query:
+            query = query.filter(Trek.location.like(f"%{location_query}%"))
+                
+        if difficulty_query:
+            query = query.filter(Trek.difficulty == difficulty_query)
+
+        filtered_treks = query.all()
+  
         user_bookings = Booking.query.filter_by(user_id=user_id).all()
-        return render_template('explore.html',treks=all_available_treks,bookings=user_bookings)
+        booked_trek_ids = [b.trek_id for b in user_bookings if b.status != 'Cancelled']
+
+        return render_template(
+            'explore.html',
+            treks=filtered_treks,
+            bookings=user_bookings,
+            selected_location=location_query,
+            selected_difficulty=difficulty_query,
+            booked_trek_ids=booked_trek_ids,
+        )
 
     return redirect('/login')
 

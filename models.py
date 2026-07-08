@@ -50,4 +50,4 @@ class Booking(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
     trek_id = db.Column(db.Integer, db.ForeignKey('trek.trek_id'), nullable=False)
     booking_date = db.Column(db.DateTime, default=datetime.utcnow)
-    status = db.Column(db.Enum('Booked', 'Cancelled', 'Completed', name='booking_status'), nullable=False, default='Booked')
+    status = db.Column(db.Enum('Confirmed', 'Cancelled', 'Completed', name='booking_status'), nullable=False, default='Confirmed')

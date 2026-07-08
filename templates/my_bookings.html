@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}My Booked Treks - TrekHorizon{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-dark">My Booked Expeditions</h2>
+        <a href="/dashboard" class="btn btn-secondary btn-sm">← Back to Explore</a>
+    </div>
+
+    {% if bookings %}
+    <div class="table-responsive shadow-sm rounded">
+        <table class="table table-bordered table-striped align-middle m-0 bg-white">
+            <thead class="table-dark">
+                <tr>
+                    <th>Booking ID</th>
+                    <th>Trek Name</th>
+                    <th>Destination</th>
+                    <th>Booking Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in bookings %}
+                <tr>
+                    <td>#{{ booking.booking_id }}</td>
+                    <td><strong>{{ booking.trek.trek_name }}</strong></td>
+                    <td> {{ booking.trek.location }}</td>
+                    <td>{{ booking.created_at.strftime('%Y-%m-%d') if booking.created_at else 'N/A' }}</td>
+                    <td>
+                        {% if booking.status == 'Cancelled' %}
+                            <span class="badge bg-danger">Cancelled</span>
+                        {% else %}
+                            <span class="badge bg-success">Confirmed</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if booking.status == 'Cancelled' %}
+                            <form action="/book/{{ booking.trek_id }}" method="POST" class="d-inline">
+                                <button type="submit" class="btn btn-link text-primary p-0 text-decoration-none fw-semibold">
+                                    Rebook Trek
+                                </button>
+                            </form>
+                        {% else %}
+                            <form action="/booking/delete/{{ booking.booking_id }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
+                                <button type="submit" class="btn btn-link text-danger p-0 text-decoration-none fw-semibold">
+                                    Cancel Booking
+                                </button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="text-center my-5 p-5 bg-white border rounded shadow-sm">
+        <h4 class="text-muted fw-bold">You haven't booked any adventures yet!</h4>
+        <p class="text-secondary">Head over to the exploration dashboard to reserve your first trekking slot.</p>
+        <a href="/dashboard" class="btn btn-primary mt-2 px-4 fw-bold shadow-sm">Browse Upcoming Treks</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

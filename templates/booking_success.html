@@ -1,41 +1,32 @@
 {% extends 'base.html' %}
 
-{% block title %}Booking Confirmed - TrekHorizon{% endblock %}
+{% block title %}Booking Successful{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center mt-5">
-    <div class="col-md-6 text-center">
-        <div class="card shadow border-0 rounded-4 p-4">
-            <div class="card-body">
-                <div class="text-success mb-3" style="font-size: 4rem;">🎉</div>
-                
-                <h2 class="fw-bold text-dark mb-2">Expedition Confirmed!</h2>
-                <p class="text-muted">Your seats have been successfully blocked for this mountain journey.</p>
-                
-                <div class="bg-light rounded-3 p-3 my-4 text-start border">
-                    <h6 class="fw-bold text-secondary mb-3 border-bottom pb-2">📋 Booking Summary</h6>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span class="text-muted">Expedition:</span>
-                        <strong class="text-dark">⛰️ {{ trek.trek_name }}</strong>
-                    </div>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span class="text-muted">Location:</span>
-                        <span class="text-secondary">{{ trek.location }}</span>
-                    </div>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span class="text-muted">Booked By:</span>
-                        <span class="text-secondary">{{ user.name }}</span>
-                    </div>
-                    <div class="d-flex justify-content-between mt-2 pt-2 border-top">
-                        <span class="text-muted">Status:</span>
-                        <span class="badge bg-success">Confirmed</span>
-                    </div>
-                </div>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="alert alert-success text-center py-4" role="alert">
+                <h4 class="alert-heading fw-bold">Booking Confirmed!</h4>
+                <p class="mb-0">Your journey for <strong>{{ trek.trek_name }}</strong> has been registered successfully.</p>
+            </div>
 
-                <div class="d-grid gap-2">
-                    <a href="/dashboard" class="btn btn-primary fw-bold">Go to My Dashboard</a>
-                    <a href="/explore-treks" class="btn btn-outline-secondary btn-sm">Find More Adventures</a>
+            <div class="card my-3">
+                <div class="card-header bg-dark text-white">
+                    <strong>Booking Details</strong>
                 </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>Trek Route Name:</strong> {{ trek.trek_name }}</li>
+                    <li class="list-group-item"><strong>Location Destination:</strong> {{ trek.location }}</li>
+                    <li class="list-group-item"><strong>Registered Traveler:</strong> {{ user.name }}</li>
+                    <li class="list-group-item"><strong>Status:</strong> Confirmed</li>
+                </ul>
+            </div>
+
+            <div class="text-center mt-4">
+                <a href="{{ url_for('explore_treks') }}" class="btn btn-outline-secondary btn-sm">
+    Back to Explore Treks
+</a>
             </div>
         </div>
     </div>

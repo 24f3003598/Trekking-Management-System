@@ -21,11 +21,17 @@
             </button>
             
             <div class="collapse navbar-collapse" id="appNavbar">
-                <ul class="navbar-nav me-auto">
+                <ul class="navbar-nav me-auto align-items-center">
                     {% if session.get('user_role') == 'Admin' %}
                         <li class="nav-item"><a class="nav-link" href="/admin/staff-details">Manage Staff</a></li>
                         <li class="nav-item"><a class="nav-link" href="/admin/user-details">Manage Users</a></li>
                         <li class="nav-item"><a class="nav-link" href="/admin/treks">Manage Treks</a></li>
+                    {% endif %}
+                    
+                    {% if session.get('user_role') == 'Trekker' %}
+                        <li class="nav-item">
+                            <a href="/my-bookings" class="btn btn-sm btn-outline-light ms-2">My Treks</a>
+                        </li>
                     {% endif %}
                 </ul>
                 
@@ -35,12 +41,13 @@
                     </span>
                     
                     {% if session.get('user_role') == 'Staff' %}
-                        <a class="btn btn-sm btn-outline-primary fw-bold px-3" href="/staff/profile">👤 My Profile</a>
+                        <a class="btn btn-sm btn-outline-primary fw-bold px-3" href="/staff/profile"> My Profile</a>
                     {% endif %}
                     
                     {% if session.get('user_role') == 'Trekker' %}
-                        <a class="btn btn-sm btn-outline-primary fw-bold px-3" href="/user/profile">👤 My Profile</a>
+                        <a href="/user/profile" class="btn btn-sm btn-outline-light fw-bold px-3">My Profile</a>
                     {% endif %}
+                    
                     <a class="btn btn-sm btn-outline-danger fw-bold px-3" href="/logout">Logout</a>
                 </div>
             </div>

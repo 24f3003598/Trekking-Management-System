@@ -10,13 +10,42 @@
     </div>
 </div>
 
+<div class="card border-0 shadow-sm mb-4 bg-white">
+    <div class="card-body p-3">
+        <form method="GET" action="/dashboard" class="row g-3 align-items-end">
+            <div class="col-md-5 col-sm-12">
+                <label class="form-label small fw-bold text-uppercase text-muted">Geographic Destination</label>
+                <input type="text" name="location" class="form-control form-control-sm" 
+                       placeholder="Search locations (e.g., Manali, Kasol)..." value="{{ selected_location or '' }}">
+            </div>
+            
+            <div class="col-md-4 col-sm-12">
+                <label class="form-label small fw-bold text-uppercase text-muted">Difficulty Tier</label>
+                <select name="difficulty" class="form-select form-select-sm">
+                    <option value="">-- All Difficulties --</option>
+                    <option value="Easy" {% if selected_difficulty == 'Easy' %}selected{% endif %}>Easy</option>
+                    <option value="Moderate" {% if selected_difficulty == 'Moderate' %}selected{% endif %}>Moderate</option>
+                    <option value="Hard" {% if selected_difficulty == 'Hard' %}selected{% endif %}>Hard</option>
+                </select>
+            </div>
+            
+            <div class="col-md-3 col-sm-12 d-flex gap-2">
+                <button type="submit" class="btn btn-sm btn-primary w-100 fw-bold"> Filter Treks</button>
+                {% if selected_location or selected_difficulty %}
+                    <a href="/dashboard" class="btn btn-sm btn-outline-secondary px-3">Clear</a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>
+
 <div class="row g-4">
     {% if treks %}
         {% for trek in treks %}
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="card h-100 shadow-sm border-0">
                     <div class="bg-primary text-white p-4 text-center rounded-top">
-                        <h4 class="mb-0 fw-bold">⛰️ {{ trek.trek_name }}</h4>
+                        <h4 class="mb-0 fw-bold">{{ trek.trek_name }}</h4>
                     </div>
                     
                     <div class="card-body d-flex flex-column">
@@ -33,7 +62,7 @@
                             </div>
                             <div class="col-6 text-end">
                                 <span class="text-muted d-block">Cost per person</span>
-                                <strong class="text-success">${{ trek.cost_per_person if trek.cost_per_person else 'N/A' }}</strong>
+                                <strong class="text-success">₹{{ "{:,.0f}".format(trek.cost_per_person or 0) }}</strong>
                             </div>
                             <div class="col-6 mt-2">
                                 <span class="text-muted d-block">Status</span>
@@ -45,14 +74,39 @@
                                 <span class="text-muted d-block">Available Slots</span>
                                 <strong class="text-dark">{{ trek.available_slots }}</strong>
                             </div>
+                            
+                            <div class="col-12 mt-2 border-top pt-2">
+                                <span class="text-muted d-inline">Difficulty: </span>
+                                <span class="fw-bold {% if trek.difficulty == 'Easy' %}text-success{% elif trek.difficulty == 'Moderate' %}text-warning{% else %}text-danger{% endif %}">
+                                    {% if trek.difficulty == 'Easy' %}{% elif trek.difficulty == 'Moderate' %}🟡{% else %}🔴{% endif %} {{ trek.difficulty if trek.difficulty else 'Not Set' }}
+                                </span>
+                            </div>
+                            <div class="mt-2 mb-3 bg-light p-2 rounded border border-light-subtle">
+                                <div class="small mb-1 text-dark">
+                                    <i class="bi bi-calendar2-check-fill text-primary me-1"></i> 
+                                    <strong>Timeline:</strong> 
+                                    {{ trek.start_date.strftime('%d %b') if trek.start_date else 'TBD' }} to 
+                                    {{ trek.end_date.strftime('%d %b %Y') if trek.end_date else 'TBD' }}
+                                </div>
+                                <div class="small text-dark">
+                                    <i class="bi bi-geo-alt-fill text-danger me-1"></i> 
+                                    <strong>Meeting Point:</strong> {{ trek.meeting_point if trek.meeting_point else 'Base Camp' }}
+                                </div>
+                            </div>
                         </div>
 
-                        {% if trek.status == 'Open' and trek.available_slots > 0 %}
-                            <form action="/book/{{ trek.trek_id }}" method="POST" class="mt-auto">
-                                <button type="submit" class="btn btn-primary w-100 fw-bold btn-sm">Book This Journey</button>
-                            </form>
+                       {% if trek.status == 'Open' and trek.available_slots > 0 %}
+                           {% if trek.trek_id in booked_trek_ids %}
+                                <button class="btn btn-success w-100 btn-sm mt-auto fw-bold" disabled>
+                                     Booked
+                                </button>
+                            {% else %}
+                                <form action="/book/{{ trek.trek_id }}" method="POST" class="mt-auto">
+                                    <button type="submit" class="btn btn-primary w-100 fw-bold btn-sm">Book This Journey</button>
+                                </form>
+                            {% endif %}
                         {% else %}
-                            <button class="btn btn-secondary w-100 btn-sm mt-auto" disabled>Slots Full / Closed</button>
+                        <button class="btn btn-secondary w-100 btn-sm mt-auto" disabled>Slots Full / Closed</button>
                         {% endif %}
                     </div>
                 </div>
@@ -61,7 +115,7 @@
     {% else %}
         <div class="col-12 text-center py-5">
             <div class="alert alert-light border py-5">
-                <p class="lead mb-0 text-muted">🗺️ No active trekking expeditions are registered right now. Check back later!</p>
+                <p class="lead mb-0 text-muted"> No trekking expeditions match your criteria. Check back later!</p>
             </div>
         </div>
     {% endif %}

@@ -1,101 +1,49 @@
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session,url_for
 from models import db, User, Trek, Booking
 
 from app import app 
 
 @app.route('/explore-treks')
 def explore_treks():
+    if 'user_id' not in session:
+        return redirect('/login')
+
+    user_id = session['user_id']
+
+    booked_bookings = Booking.query.filter_by(user_id=user_id, status='Confirmed').all()
+    booked_trek_ids = [b.trek_id for b in booked_bookings]
+
     open_treks = Trek.query.filter_by(status='Open').all()
-    return render_template('explore.html', treks=open_treks)
-
-
+    return render_template('explore.html', treks=open_treks, booked_trek_ids=booked_trek_ids)
 
 @app.route('/book/<int:trek_id>', methods=['POST'])
 def book_trek(trek_id):
     if 'user_id' not in session:
         return redirect('/login')
 
+    user_id = session['user_id']
     trek = Trek.query.get_or_404(trek_id)
 
-    if request.method == 'POST':
-        logged_in_user_id = session['user_id']
-        current_trekker = User.query.get(logged_in_user_id)
+    existing_booking = Booking.query.filter_by(user_id=user_id, trek_id=trek_id).first()
+    if existing_booking and existing_booking.status != 'Cancelled':
+        return render_template('booking_failed.html', trek=trek, reason="You have already booked this trek route.")
 
-        if not current_trekker or session.get('user_role') != 'Trekker':
-            return render_template('booking_failed.html', error_message="Authentication Error: Please log in as a Trekker.")
+    if trek.status != 'Open' or trek.available_slots <= 0:
+        return render_template('booking_failed.html', trek=trek, reason="This trek is fully booked or closed.")
 
-        existing_booking = Booking.query.filter_by(
-            user_id=logged_in_user_id, 
-            trek_id=trek_id
-        ).first()
-        
-        if existing_booking:
-            return render_template('booking_failed.html', error_message="You have already secured a booking for this journey!")
+    trek.available_slots -= 1
 
-        try:
-            num_persons = int(request.form.get('num_persons', 1))
-        except ValueError:
-            return render_template('booking_failed.html', error_message="Invalid input data format.")
+    new_booking = Booking(
+        user_id=user_id,
+        trek_id=trek_id,
+        status='Confirmed'
+    )
+    
+    db.session.add(new_booking)
+    db.session.commit()
 
-        if trek.status != 'Open' or num_persons < 1 or num_persons > trek.available_slots:
-            return render_template('booking_failed.html', error_message=f"Cannot book {num_persons} slots. Only {trek.available_slots} available.")
-
-        try:
-            new_booking = Booking(
-                user_id=current_trekker.user_id,
-                trek_id=trek.trek_id,
-                status='Booked'
-            )
-
-            trek.available_slots -= num_persons
-            db.session.add(new_booking)
-            db.session.commit()
-
-            return render_template('booking_success.html', trek=trek, user=current_trekker)
-            
-        except Exception as e:
-            db.session.rollback()
-            return render_template('booking_failed.html', error_message="A backend database error occurred while processing your slot request.")
-
-@app.route('/my-bookings')
-def booking_history():
-    if 'user_id' not in session:
-        return redirect('/login')
-        
-    logged_in_user_id = session['user_id']
-    current_user = User.query.get(logged_in_user_id)
-
-    if not current_user or session.get('user_role') != 'Trekker':
-        return "Access Forbidden", 403
-
-    user_bookings = Booking.query.filter_by(user_id=logged_in_user_id).all()
-
-    return render_template('booking_history.html', bookings=user_bookings, user=current_user)
-
-@app.route('/cancel-booking/<int:booking_id>', methods=['POST'])
-def cancel_booking(booking_id):
-    if 'user_id' not in session:
-        return redirect('/login')
-
-    booking = Booking.query.get_or_404(booking_id)
-
-    if booking.user_id != session['user_id']:
-        return "Access Forbidden: You do not own this booking.", 403
-
-    if booking.status == 'Cancelled':
-        return redirect('/my-bookings')
-
-    try:
-        booking.status = 'Cancelled'
-        
-        booking.trek.available_slots += 1 
-        
-        db.session.commit()
-        return redirect('/my-bookings')
-        
-    except Exception as e:
-        db.session.rollback()
-        return "A backend database error occurred while cancelling your journey.", 500
+    current_user = User.query.get(user_id)
+    return render_template('booking_success.html', trek=trek, user=current_user)
 
 @app.route('/user/profile', methods=['GET', 'POST'])
 def user_profile():
@@ -114,3 +62,27 @@ def user_profile():
         return redirect('/dashboard?success=true')
 
     return render_template('user_profile.html', user=current_user)
+
+@app.route('/my-bookings')
+def my_bookings():
+    if 'user_id' not in session or session['user_role'] != 'Trekker':
+        return redirect('/login')
+        
+    user_id = session['user_id']
+    user_bookings = Booking.query.filter_by(user_id=user_id).all()
+    return render_template('my_bookings.html', bookings=user_bookings)
+
+@app.route('/booking/delete/<int:booking_id>', methods=['POST'])
+def delete_booked_trek(booking_id):
+    if 'user_id' not in session or session['user_role'] != 'Trekker':
+        return "Access Forbidden", 403
+
+    booking = Booking.query.get_or_404(booking_id)
+
+    if booking.user_id != session['user_id']:
+        return "Unauthorized Operation", 401
+
+    db.session.delete(booking)
+    db.session.commit()
+    
+    return redirect('/my-bookings')
