@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Admin - Trekking History{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Global Trekking History</h2>
+    <table class="table table-hover mt-3">
+        <thead class="table-dark">
+            <tr>
+                <th>Booking ID</th>
+                <th>Trek Name</th>
+                <th>Trekker</th>
+                <th>Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in history %}
+            <tr>
+                <td>#{{ entry.booking_id }}</td>
+                <td>{{ entry.trek.trek_name }}</td>
+                <td>{{ entry.trekker.name }}</td>
+                <td>{{ entry.booking_date }}</td>
+                <td>
+                    <span class="badge {% if entry.status == 'Booked' %}bg-primary{% else %}bg-secondary{% endif %}">
+                        {{ entry.status }}
+                    </span>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

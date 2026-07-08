@@ -8,19 +8,13 @@ def staff_dashboard():
     if 'user_id' not in session or session.get('user_role') != 'Staff':
         return "Access Forbidden: Staff Only", 403
 
-    current_staff_id = session['user_id']
+    assigned_treks = Trek.query.filter_by(assigned_staff_id=session['user_id']).all()
 
-    print(f"\n--- [DEBUG] Staff Dashboard Access ---")
-    print(f"Logged-in Staff User ID: {current_staff_id}")
-
-    assigned_treks = Trek.query.filter_by(assigned_staff_id=current_staff_id).all()
-    
-    print(f"Number of treks retrieved from SQLite: {len(assigned_treks)}")
+    trek_counts = {}
     for trek in assigned_treks:
-        print(f" -> Assigned Trek found: ID #{trek.trek_id} - {trek.trek_name}")
-    print("---------------------------------------\n")
+        trek_counts[trek.trek_id] = sum(1 for b in trek.bookings if b.status == 'Confirmed')
 
-    return render_template('staffhomepage.html', treks=assigned_treks)
+    return render_template('staffhomepage.html', treks=assigned_treks, trek_counts=trek_counts)
 
 @app.route('/staff/update_trek/<int:trek_id>', methods=['POST'])
 def update_trek(trek_id):
@@ -45,7 +39,8 @@ def update_trek(trek_id):
 @app.route('/staff/trek/<int:trek_id>/roster')
 def view_roster(trek_id):
     trek = Trek.query.get_or_404(trek_id)
-    return render_template('roster.html', trek=trek)
+    confirmed_bookings = [b for b in trek.bookings if b.status == 'Confirmed']
+    return render_template('roster.html', trek=trek , bookings=confirmed_bookings)
 
 @app.route('/staff/profile', methods=['GET', 'POST'])
 def staff_profile():

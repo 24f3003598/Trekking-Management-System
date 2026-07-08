@@ -23,11 +23,16 @@ def dashboard():
     if role == 'Admin':
         pending_staff = User.query.filter_by(role='Staff', status='Pending').all()
         all_treks = Trek.query.all()
-        all_users = User.query.all()
+
+        trekker_count = User.query.filter_by(role='Trekker').count()
+        staff_count = User.query.filter_by(role='Staff').count()
+    
         return render_template('adminhomepage.html', 
-                               staff_requests=pending_staff, 
-                               total_treks=all_treks, 
-                               total_users=all_users)
+                           staff_requests=pending_staff, 
+                           total_treks=all_treks, 
+                           trekker_count=trekker_count,
+                           staff_count=staff_count)
+
 
     elif role == 'Staff':
         assigned_treks = Trek.query.filter_by(assigned_staff_id=user_id).all()

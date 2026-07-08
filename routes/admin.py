@@ -1,5 +1,5 @@
 from flask import Flask,render_template,request,redirect,session
-from models import db, User ,Trek 
+from models import db, User ,Trek , Booking
 from datetime import datetime
 from app import app
 
@@ -190,3 +190,12 @@ def admin_delete_trek(trek_id):
 @app.route('/logout')
 def logout():
     return render_template('home.html')
+
+@app.route('/admin/history')
+def admin_trekking_history():
+    if 'user_id' not in session or session['user_role'] != 'Admin':
+        return "Access Forbidden", 403
+
+    all_history = Booking.query.all()
+    
+    return render_template('adminhistory.html', history=all_history)

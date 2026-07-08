@@ -15,7 +15,7 @@
         </div>
         <div>
             <span class="badge bg-dark fs-6 font-monospace py-2 px-3">
-                Total Going: {{ trek.bookings|length }}
+                Total Going: {{ bookings|length }}
             </span>
         </div>
     </div>
@@ -37,8 +37,8 @@
                         </tr>
                     </thead>
                     <tbody class="border-top-0">
-                        {% if trek.bookings %}
-                            {% for booking in trek.bookings %}
+                        {% if bookings %}
+                            {% for booking in bookings %}
                             <tr>
                                 <td class="ps-4 text-muted font-monospace small">{{ loop.index }}</td>
                                 <td><strong>{{ booking.trekker.name }}</strong></td>
