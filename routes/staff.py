@@ -1,20 +1,7 @@
 from flask import render_template, request, redirect, session
 from datetime import datetime
-from models import db, Trek, User
+from models import db, Trek, User , Booking
 from app import app  
-
-@app.route('/staff/dashboard')
-def staff_dashboard():
-    if 'user_id' not in session or session.get('user_role') != 'Staff':
-        return "Access Forbidden: Staff Only", 403
-
-    assigned_treks = Trek.query.filter_by(assigned_staff_id=session['user_id']).all()
-
-    trek_counts = {}
-    for trek in assigned_treks:
-        trek_counts[trek.trek_id] = sum(1 for b in trek.bookings if b.status == 'Confirmed')
-
-    return render_template('staffhomepage.html', treks=assigned_treks, trek_counts=trek_counts)
 
 @app.route('/staff/update_trek/<int:trek_id>', methods=['POST'])
 def update_trek(trek_id):
@@ -34,13 +21,13 @@ def update_trek(trek_id):
 
     db.session.commit()
 
-    return redirect('/staff/dashboard?updated=true')
+    return redirect('/dashboard?updated=true')
 
 @app.route('/staff/trek/<int:trek_id>/roster')
 def view_roster(trek_id):
     trek = Trek.query.get_or_404(trek_id)
-    confirmed_bookings = [b for b in trek.bookings if b.status == 'Confirmed']
-    return render_template('roster.html', trek=trek , bookings=confirmed_bookings)
+    bookings = Booking.query.filter_by(trek_id=trek_id).all()
+    return render_template('roster.html', trek=trek , bookings=bookings)
 
 @app.route('/staff/profile', methods=['GET', 'POST'])
 def staff_profile():
@@ -57,6 +44,6 @@ def staff_profile():
         
         session['user_name'] = staff_user.name
         
-        return redirect('/staff/dashboard?updated=true')
+        return redirect('/dashboard?updated=true')
         
     return render_template('staff_profile.html', staff=staff_user)

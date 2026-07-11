@@ -10,11 +10,7 @@
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
         <div class="container">
-            {% if session.get('user_role') == 'Staff' %}
-                <a class="navbar-brand fw-bold text-primary" href="/staff/dashboard">TrekHorizon</a>
-            {% else %}
-                <a class="navbar-brand fw-bold text-primary" href="/dashboard">TrekHorizon</a>
-            {% endif %}
+            <a class="navbar-brand fw-bold text-primary" href="/dashboard">TrekHorizon</a>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#appNavbar">
                 <span class="navbar-toggler-icon"></span>
@@ -24,7 +20,7 @@
                 <ul class="navbar-nav me-auto align-items-center">
                     {% if session.get('user_role') == 'Admin' %}
                         <li class="nav-item"><a class="nav-link" href="/admin/staff-details">Manage Staff</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/admin/user-details">Manage Users</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/admin/trekker-details">Manage Trekkers</a></li>
                         <li class="nav-item"><a class="nav-link" href="/admin/treks">Manage Treks</a></li>
                         <li class="nav-item"><a class="nav-link" href="/admin/history">View All Bookings</a></li>
                     

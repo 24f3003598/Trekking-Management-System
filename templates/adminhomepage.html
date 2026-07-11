@@ -1,6 +1,6 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} 
 
-{% block title %}Admin Control Center - TrekHorizon{% endblock %}
+{% block title %}Admin Control Center - TrekHorizon{% endblock %} 
 
 {% block content %}
 <div class="container py-4">
@@ -11,43 +11,43 @@
 
     <div class="row g-3 mb-5">
         <div class="col-md-3">
-            <div class="card p-3 shadow-sm text-center">
+            <div class="card p-3 shadow-sm text-center h-100">
                 <div class="text-muted small">Total Trekkers</div>
                 <h3 class="fw-bold">{{ trekker_count }}</h3>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card p-3 shadow-sm text-center">
+            <div class="card p-3 shadow-sm text-center h-100">
                 <div class="text-muted small">Total Staff</div>
                 <h3 class="fw-bold">{{ staff_count }}</h3>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card p-3 shadow-sm text-center">
+            <div class="card p-3 shadow-sm text-center h-100">
                 <div class="text-muted small">Active Treks</div>
                 <h3 class="fw-bold">{{ total_treks }}</h3>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card p-3 shadow-sm text-center border-warning">
+            <div class="card p-3 shadow-sm text-center border-warning h-100">
                 <div class="text-muted small">Pending Approvals</div>
-                <h3 class="fw-bold text-warning">{{ staff_requests }}</h3>
+                <h3 class="fw-bold text-warning">{{ staff_requests|length if staff_requests is iterable else staff_requests }}</h3>
             </div>
         </div>
     </div>
 
     <div class="row g-3">
-        <div class="col-md-3">
-            <a href="/admin/user-details" class="btn btn-outline-primary w-100 py-3 fw-bold">Manage Trekkers</a>
+        <div class="col-md-3 d-flex justify-content-center">
+            <a href="/admin/trekker-details" class="btn btn-primary text-white w-75">Manage Trekkers</a>
         </div>
-        <div class="col-md-3">
-            <a href="/admin/staff-details" class="btn btn-outline-primary w-100 py-3 fw-bold">Manage Staff</a>
+        <div class="col-md-3 d-flex justify-content-center">
+            <a href="/admin/staff-details" class="btn btn-primary text-white w-75">Manage Staff</a>
         </div>
-        <div class="col-md-3">
-            <a href="/admin/history" class="btn btn-outline-primary w-100 py-3 fw-bold">All Bookings</a>
+        <div class="col-md-3 d-flex justify-content-center">
+            <a href="/admin/history" class="btn btn-primary text-white w-75">All Bookings</a>
         </div>
-        <div class="col-md-3">
-            <a href="/admin/treks" class="btn btn-outline-primary w-100 py-3 fw-bold">Trek Details</a>
+        <div class="col-md-3 d-flex justify-content-center">
+            <a href="/admin/treks" class="btn btn-primary text-white w-75">Trek Details</a>
         </div>
     </div>
 </div>

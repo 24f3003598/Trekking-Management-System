@@ -47,7 +47,7 @@ def admin_blacklist_staff(staff_id):
     db.session.commit()
     return redirect('/admin/staff-details')
 
-@app.route('/admin/user-details')
+@app.route('/admin/trekker-details')
 def admin_user_details():
     if 'user_id' not in session or session['user_role'] != 'Admin':
         return "Access Forbidden: Administrator clearance required.", 403
