@@ -1,15 +1,15 @@
 {% extends 'base.html' %}
-{% block title %}Admin - Trekking History{% endblock %}
+{% block title %}Admin - Booking History{% endblock %}
 {% block content %}
 
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Trekking History</li>
+        <li class="breadcrumb-item active" aria-current="page">Booking History</li>
     </ol>
 </nav>
 <div class="container mt-4">
-    <h2>Global Trekking History</h2>
+    <h2>Booking History</h2>
     <table class="table table-hover mt-3">
         <thead class="table-dark">
             <tr>
@@ -26,7 +26,7 @@
                 <td>#{{ entry.booking_id }}</td>
                 <td>{{ entry.trek.trek_name }}</td>
                 <td>{{ entry.trekker.name }}</td>
-                <td>{{ entry.booking_date }}</td>
+                <td>{{ entry.booking_date.strftime('%Y-%m-%d') }}</td>
                 <td>
                     <span class="badge {% if entry.status == 'Booked' %}bg-primary{% else %}bg-secondary{% endif %}">
                         {{ entry.status }}

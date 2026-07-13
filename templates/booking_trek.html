@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Booking Successful{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card my-3">
+                <div class="card-header bg-dark text-white">
+                    <strong>Booking Details</strong>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>Trek Route Name:</strong> {{ trek.trek_name }}</li>
+                    <li class="list-group-item"><strong>Location Destination:</strong> {{ trek.location }}</li>
+                    <li class="list-group-item"><strong>Registered Traveler:</strong> {{ user.name }}</li>
+                </ul>
+               <form method="POST" action="{{ url_for('book_trek', trek_id=trek.trek_id) }}">
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="confirmCheckbox" name="confirm" required>
+                        <label class="form-check-label" for="confirmCheckbox">
+                            I confirm that I have read the trek details and agree to book this expedition.
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-3 ">
+                        Submit Booking
+                    </button>
+                </form>
+            </div>
+
+            <div class="text-center mt-4">
+                <a href="{{ url_for('explore_treks') }}" class="btn btn-outline-secondary btn-sm">
+                Back to Explore Treks</a>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -13,11 +13,11 @@
         {% endif %}
 
     <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Trek History</li>
-    </ol>
-</nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Trek History</li>
+        </ol>
+    </nav>
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="mb-0">Trek Management Directory</h2>
@@ -26,17 +26,15 @@
 
     
     <div class="card shadow-sm border-0 mb-4 bg-white p-3">
-
-        
-    <form action="/admin/treks" method="GET" class="row g-2 align-items-center">
-        <div class="col-auto">
-            <input type="text" name="search" class="form-control" placeholder="Search by name or ID" value="{{ request.args.get('search', '') }}">
-        </div>
-        <div class="col-auto">
-            <button type="submit" class="btn btn-primary">Search</button>
-            <a href="/admin/treks" class="btn btn-outline-secondary">Clear</a>
-        </div>
-    </form>
+        <form action="/admin/treks" method="GET" class="row g-2 align-items-center">
+            <div class="col-auto">
+                <input type="text" name="search" class="form-control" placeholder="Search by name or ID" value="{{ request.args.get('search', '') }}">
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Search</button>
+                <a href="/admin/treks" class="btn btn-outline-secondary">Clear</a>
+            </div>
+        </form>
     </div>
 
     <div class="card shadow-sm border-0">
@@ -84,12 +82,10 @@
                                 </td>
                                 <td class="text-center">
                                     <div class="d-inline-flex align-items-center gap-1">
-                                        <a href="/admin/trek/edit/{{ trek.trek_id }}" class="text-dark text-decoration-none">Edit</a>
-                                        
-                                        <span class="text-muted">/</span>
-                                        
+                                        <a href="/admin/trek/edit/{{ trek.trek_id }}" class="btn btn-link p-0 text-primary">Edit</a>
+                                        <span>/</span>
                                         <form action="/admin/trek/delete/{{ trek.trek_id }}" method="POST" onsubmit="return confirm('Are you absolutely sure you want to permanently delete this trek? This action cannot be undone.');" class="d-inline">
-                                            <button type="submit" class="btn btn-link p-0 text-danger text-decoration-none border-0 align-baseline" style="font-size: inherit;">Delete</button>
+                                            <button type="submit" class="btn btn-link p-0 text-danger align-baseline">Delete</button>
                                         </form>
                                     </div>
                                 </td>

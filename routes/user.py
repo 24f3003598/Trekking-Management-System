@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, session,url_for
+from datetime import datetime
 from models import db, User, Trek, Booking
 
 from app import app 
@@ -16,34 +17,32 @@ def explore_treks():
     open_treks = Trek.query.filter_by(status='Open').all()
     return render_template('explore.html', treks=open_treks, booked_trek_ids=booked_trek_ids)
 
-@app.route('/book/<int:trek_id>', methods=['POST'])
+@app.route('/book/<int:trek_id>', methods=['GET', 'POST'])
 def book_trek(trek_id):
     if 'user_id' not in session:
         return redirect('/login')
 
     user_id = session['user_id']
     trek = Trek.query.get_or_404(trek_id)
+    user = User.query.get_or_404(user_id)
 
-    existing_booking = Booking.query.filter_by(user_id=user_id, trek_id=trek_id).first()
-    if existing_booking and existing_booking.status != 'Cancelled':
-        return render_template('booking_failed.html', trek=trek, reason="You have already booked this trek route.")
+    if request.method == 'POST':
+        if trek.status != 'Open' or trek.available_slots <= 0:
+            return "Trek is not available", 400
 
-    if trek.status != 'Open' or trek.available_slots <= 0:
-        return render_template('booking_failed.html', trek=trek, reason="This trek is fully booked or closed.")
+        trek.available_slots -= 1
+        new_booking = Booking(user_id=user_id, trek_id=trek_id, status='Confirmed')
+        db.session.add(new_booking)
+        db.session.commit()
 
-    trek.available_slots -= 1
+        return redirect(url_for('booking_success', trek_id=trek_id))
 
-    new_booking = Booking(
-        user_id=user_id,
-        trek_id=trek_id,
-        status='Confirmed'
-    )
-    
-    db.session.add(new_booking)
-    db.session.commit()
+    return render_template('booking_trek.html', trek=trek, user=user)
 
-    current_user = User.query.get(user_id)
-    return render_template('booking_success.html', trek=trek, user=current_user)
+@app.route('/booking-success/<int:trek_id>')
+def booking_success(trek_id):
+    trek = Trek.query.get_or_404(trek_id)
+    return render_template('booking_success.html', trek=trek)
 
 @app.route('/user/profile', methods=['GET', 'POST'])
 def user_profile():
@@ -70,7 +69,7 @@ def my_bookings():
         
     user_id = session['user_id']
     user_bookings = Booking.query.filter_by(user_id=user_id).all()
-    return render_template('my_bookings.html', bookings=user_bookings)
+    return render_template('my_bookings.html', bookings=user_bookings )
 
 @app.route('/booking/delete/<int:booking_id>', methods=['POST'])
 def delete_booked_trek(booking_id):

@@ -3,10 +3,13 @@ from models import db, User ,Trek , Booking
 from datetime import datetime
 from app import app
 
+def check_admin():
+    return 'user_id' in session and session.get('user_role') == 'Admin'
+
 @app.route('/admin/staff-details')
 def admin_staff_details():
-    if 'user_id' not in session or session['user_role'] != 'Admin':
-        return "Access Forbidden: Administrator clearance required.", 403
+    if not check_admin():
+        return "Access Forbidden", 403
 
     search_query = request.args.get('search', '').strip()
 
@@ -26,20 +29,19 @@ def admin_staff_details():
 
 @app.route('/admin/staff/approve/<int:staff_id>')
 def admin_approve_staff(staff_id):
-    if 'user_id' not in session or session['user_role'] != 'Admin':
+    if not check_admin():
         return "Access Forbidden", 403
         
     staff_user = User.query.get_or_404(staff_id)
     
     staff_user.status = 'Approved'
     db.session.commit() 
-    all_staff = User.query.filter_by(role='Staff').all()
-    return render_template('adminstaffdetails.html', staff_list=all_staff)
+    return redirect('/admin/staff-details')
                         
                        
 @app.route('/admin/staff/blacklist/<int:staff_id>')
 def admin_blacklist_staff(staff_id):
-    if 'user_id' not in session or session.get('user_role') != 'Admin':
+    if not check_admin():
         return "Access Forbidden", 403
         
     staff_user = User.query.get_or_404(staff_id)
@@ -49,8 +51,8 @@ def admin_blacklist_staff(staff_id):
 
 @app.route('/admin/trekker-details')
 def admin_user_details():
-    if 'user_id' not in session or session['user_role'] != 'Admin':
-        return "Access Forbidden: Administrator clearance required.", 403
+    if not check_admin():
+        return "Access Forbidden", 403
 
     search_query = request.args.get('search', '').strip()
  
@@ -69,8 +71,8 @@ def admin_user_details():
 
 @app.route('/admin/user/toggle/<int:user_id>')
 def admin_user_toggle(user_id):
-    if 'user_id' not in session or session['user_role'] != 'Admin':
-        return "Access Forbidden: Administrator clearance required.", 403
+    if not check_admin():
+        return "Access Forbidden", 403
     
     traveler = User.query.get_or_404(user_id)
     
@@ -81,19 +83,17 @@ def admin_user_toggle(user_id):
         
     db.session.commit()
 
-    return redirect('/admin/user-details')
+    return redirect('/admin/trekker-details')
 
 @app.route('/admin/treks')
 def admin_trek_list():
-    if 'user_id' not in session or session['user_role'] != 'Admin':
+    if not check_admin():
         return "Access Forbidden", 403
 
     search_query = request.args.get('search', '').strip()
     
-    # 2. Start with a base query selecting all treks
     query = Trek.query
-    
-    # 3. Apply dynamic filtering if the admin typed something
+
     if search_query:
         clean_id = search_query.replace('#', '').strip()
         if clean_id.isdigit():
@@ -107,7 +107,7 @@ def admin_trek_list():
 
 @app.route('/admin/trek/create', methods=['GET', 'POST'])
 def admin_create_trek():
-    if 'user_id' not in session or session['user_role'] != 'Admin':
+    if not check_admin():
         return "Access Forbidden", 403
 
     if request.method == 'POST':
@@ -143,7 +143,7 @@ def admin_create_trek():
 
 @app.route('/admin/trek/edit/<int:trek_id>', methods=['GET', 'POST'])
 def admin_edit_trek(trek_id):
-    if 'user_id' not in session or session['user_role'] != 'Admin':
+    if not check_admin():
         return "Access Forbidden", 403
 
     trek = Trek.query.get_or_404(trek_id)
@@ -173,11 +173,10 @@ def admin_edit_trek(trek_id):
 
 @app.route('/admin/trek/delete/<int:trek_id>', methods=['POST'])
 def admin_delete_trek(trek_id):
-    if 'user_id' not in session or session['user_role'] != 'Admin':
-        return "Access Forbidden", 403
+    if not check_admin():
+         return "Access Forbidden", 403
 
     trek = Trek.query.get_or_404(trek_id)
-    trek_name = trek.trek_name
 
     if trek.bookings:
         return redirect('/admin/treks')
@@ -187,13 +186,9 @@ def admin_delete_trek(trek_id):
 
     return redirect('/admin/treks')
 
-@app.route('/logout')
-def logout():
-    return render_template('home.html')
-
 @app.route('/admin/history')
 def admin_trekking_history():
-    if 'user_id' not in session or session['user_role'] != 'Admin':
+    if not check_admin():
         return "Access Forbidden", 403
 
     all_history = Booking.query.all()

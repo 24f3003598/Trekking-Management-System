@@ -27,7 +27,7 @@
                     <td>#{{ booking.booking_id }}</td>
                     <td><strong>{{ booking.trek.trek_name }}</strong></td>
                     <td> {{ booking.trek.location }}</td>
-                    <td>{{ booking.created_at.strftime('%Y-%m-%d') if booking.created_at else 'N/A' }}</td>
+                    <td>{{booking.booking_date.strftime('%Y-%m-%d') }}</td>
                     <td>
                         {% if booking.status == 'Cancelled' %}
                             <span class="badge bg-danger">Cancelled</span>
@@ -36,15 +36,9 @@
                         {% endif %}
                     </td>
                     <td>
-                        {% if booking.status == 'Cancelled' %}
-                            <form action="/book/{{ booking.trek_id }}" method="POST" class="d-inline">
-                                <button type="submit" class="btn btn-link text-primary p-0 text-decoration-none fw-semibold">
-                                    Rebook Trek
-                                </button>
-                            </form>
-                        {% else %}
+                        {% if booking.status == 'Confirmed' %}
                             <form action="/booking/delete/{{ booking.booking_id }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
-                                <button type="submit" class="btn btn-link text-danger p-0 text-decoration-none fw-semibold">
+                                <button type="submit" class="btn btn-danger ">
                                     Cancel Booking
                                 </button>
                             </form>

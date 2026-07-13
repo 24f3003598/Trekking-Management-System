@@ -1,32 +1,15 @@
 {% extends 'base.html' %}
-
 {% block title %}Booking Successful{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <div class="alert alert-success text-center py-4" role="alert">
+            <div class="alert alert-success text-center py-4">
                 <h4 class="alert-heading fw-bold">Booking Confirmed!</h4>
-                <p class="mb-0">Your journey for <strong>{{ trek.trek_name }}</strong> has been registered successfully.</p>
-            </div>
-
-            <div class="card my-3">
-                <div class="card-header bg-dark text-white">
-                    <strong>Booking Details</strong>
-                </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item"><strong>Trek Route Name:</strong> {{ trek.trek_name }}</li>
-                    <li class="list-group-item"><strong>Location Destination:</strong> {{ trek.location }}</li>
-                    <li class="list-group-item"><strong>Registered Traveler:</strong> {{ user.name }}</li>
-                    <li class="list-group-item"><strong>Status:</strong> Confirmed</li>
-                </ul>
-            </div>
-
-            <div class="text-center mt-4">
-                <a href="{{ url_for('explore_treks') }}" class="btn btn-outline-secondary btn-sm">
-    Back to Explore Treks
-</a>
+                <p>Your journey for <strong>{{ trek.trek_name }}</strong> has been registered successfully.</p>
+                <hr>
+                <a href="{{ url_for('explore_treks') }}" class="btn btn-outline-success">Back to Explore</a>
             </div>
         </div>
     </div>

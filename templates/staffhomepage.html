@@ -6,7 +6,7 @@
 {% set stats = namespace(participants=0, active=0) %}
 {% for trek in treks %}
     {% set stats.participants = stats.participants + trek.bookings|length %}
-    {% if trek.status in ['Open', 'Pending', 'Started', 'Ongoing'] %}
+    {% if trek.status in ['Open', 'Started', 'Ongoing'] %}
         {% set stats.active = stats.active + 1 %}
     {% endif %}
 {% endfor %}

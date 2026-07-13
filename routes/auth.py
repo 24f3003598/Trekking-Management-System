@@ -75,3 +75,7 @@ def register():
         return redirect('/login')
 
     return render_template('register.html')
+
+@app.route('/logout')
+def logout():
+    return render_template('home.html')

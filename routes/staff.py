@@ -3,6 +3,9 @@ from datetime import datetime
 from models import db, Trek, User , Booking
 from app import app  
 
+def check_staff():
+    return 'user_id' in session and session.get('user_role') == 'Staff'
+
 @app.route('/staff/update_trek/<int:trek_id>', methods=['POST'])
 def update_trek(trek_id):
     if 'user_id' not in session or session.get('user_role') != 'Staff':
