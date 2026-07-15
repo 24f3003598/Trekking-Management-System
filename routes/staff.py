@@ -8,8 +8,8 @@ def check_staff():
 
 @app.route('/staff/update_trek/<int:trek_id>', methods=['POST'])
 def update_trek(trek_id):
-    if 'user_id' not in session or session.get('user_role') != 'Staff':
-        return redirect('/login')
+    if not check_staff():
+        return "Access Forbidden",403
 
     trek = Trek.query.get_or_404(trek_id)
 
@@ -28,14 +28,16 @@ def update_trek(trek_id):
 
 @app.route('/staff/trek/<int:trek_id>/roster')
 def view_roster(trek_id):
+    if not check_staff():
+        return "Access Forbidden",403
     trek = Trek.query.get_or_404(trek_id)
     bookings = Booking.query.filter_by(trek_id=trek_id).all()
     return render_template('roster.html', trek=trek , bookings=bookings)
 
 @app.route('/staff/profile', methods=['GET', 'POST'])
 def staff_profile():
-    if 'user_id' not in session or session.get('user_role') != 'Staff':
-        return "Access Forbidden", 403
+    if not check_staff():
+        return "Access Forbidden",403
 
     staff_user = User.query.get_or_404(session['user_id'])
     

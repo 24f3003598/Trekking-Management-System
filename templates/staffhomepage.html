@@ -27,7 +27,7 @@
     {% endif %}
 
     <div class="p-3 bg-light border rounded mb-3">
-        <h4 class="mb-0 text-dark fw-bold">Welcome Back, {{ session.get('user_name', 'Staff Member') }}!</h4>
+        <h4 class="mb-0 text-dark fw-bold">Welcome Back, {{ session.get('user_name') }}!</h4>
     </div>
 
     <div class="row g-3 mb-4">
@@ -121,9 +121,9 @@
                                         </optgroup>
                                         
                                         <optgroup label="Live Trip Execution">
-                                            <option value="Started" {% if trek.status == 'Started' %}selected{% endif %}>🚀 Started (Group Departed)</option>
-                                            <option value="Ongoing" {% if trek.status == 'Ongoing' %}selected{% endif %}>🏕️ Ongoing (In Progress)</option>
-                                            <option value="Completed" {% if trek.status == 'Completed' %}selected{% endif %}>✅ Completed (Returned Safely)</option>
+                                            <option value="Started" {% if trek.status == 'Started' %}selected{% endif %}> Started (Group Departed)</option>
+                                            <option value="Ongoing" {% if trek.status == 'Ongoing' %}selected{% endif %}>Ongoing (In Progress)</option>
+                                            <option value="Completed" {% if trek.status == 'Completed' %}selected{% endif %}>Completed (Returned Safely)</option>
                                         </optgroup>
                                     </select>
                                 </div>
@@ -147,7 +147,5 @@
 
 </div>
 
-<style>
-.fs-8 { font-size: 0.8rem !important; }
-</style>
+
 {% endblock %}

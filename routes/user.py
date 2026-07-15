@@ -1,8 +1,10 @@
 from flask import Flask, render_template, request, redirect, session,url_for
 from datetime import datetime
 from models import db, User, Trek, Booking
-
 from app import app 
+
+def check_trekker():
+    return 'user_id' not in session and session['user_role'] == 'Trekker'
 
 @app.route('/explore-treks')
 def explore_treks():
@@ -64,18 +66,14 @@ def user_profile():
 
 @app.route('/my-bookings')
 def my_bookings():
-    if 'user_id' not in session or session['user_role'] != 'Trekker':
-        return redirect('/login')
-        
     user_id = session['user_id']
+    if not user_id:
+        return redirect('/login')
     user_bookings = Booking.query.filter_by(user_id=user_id).all()
     return render_template('my_bookings.html', bookings=user_bookings )
 
 @app.route('/booking/delete/<int:booking_id>', methods=['POST'])
 def delete_booked_trek(booking_id):
-    if 'user_id' not in session or session['user_role'] != 'Trekker':
-        return "Access Forbidden", 403
-
     booking = Booking.query.get_or_404(booking_id)
 
     if booking.user_id != session['user_id']:
